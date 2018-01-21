@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -26,7 +27,15 @@ class InvertedIndexStructure {
         try (Scanner scanner = new Scanner(file)) {
             scanner.useDelimiter(" +");
             while (scanner.hasNext()) {
-                mappings.put(scanner.next(), new Term(file));
+                String word = scanner.next();
+                if (mappings.containsKey(word) && mappings.get(word).stream().anyMatch(term -> term.getSource() == file)) {
+                    mappings.get(word).stream()
+                            .filter(it -> it.getSource().equals(file))
+                            .findFirst()
+                            .ifPresent(Term::addCount);
+                } else {
+                    mappings.put(word, new Term(file));
+                }
             }
         } catch (FileNotFoundException e) {
             // TODO: logger.error() // warn() here
@@ -68,8 +77,13 @@ class InvertedIndexStructure {
      * @return List of files where given query was found (just the filenames)
      */
     public List<String> find(String query) {
-        final List<Term> paths = findPaths(query);
-        return getFilenames(paths);
+        final List<Term> terms = findPaths(query);
+        applyTfidfSort(terms);
+        return getFilenames(terms);
+    }
+
+    private void applyTfidfSort(final List<Term> terms) {
+        terms.sort(Comparator.comparingInt(Term::getNrOfOccurences).reversed());
     }
 
     private List<String> getFilenames(final List<Term> paths) {

@@ -5,7 +5,7 @@ import java.io.File;
 class Term {
 
     private File source;
-    private int nrOfOccurences = 0;
+    private int nrOfOccurences = 1;
 
     public Term(final File source) {
         this.source = source;
@@ -17,5 +17,9 @@ class Term {
 
     public File getSource() {
         return source;
+    }
+
+    public int getNrOfOccurences() {
+        return nrOfOccurences;
     }
 }
