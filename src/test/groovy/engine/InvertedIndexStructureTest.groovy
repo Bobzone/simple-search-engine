@@ -9,22 +9,23 @@ import java.util.stream.Collectors
 
 class InvertedIndexStructureTest extends Specification {
 
+    public static final String TEST_DOCS = "src/main/resources/test-docs"
+
     @Unroll
     def "Java8 method of reading files works ok"() {
         when:
-        final List<File> files = Files.walk(Paths.get("test-docs"))
+        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
                 .filter { it -> Files.isRegularFile(it) }
                 .map { it.toFile() }
                 .collect(Collectors.toList())
         then:
         files.size() == 3
-        files.get(0).getName() == "first.txt"
     }
 
     @Unroll
     def "You can put data from single file into structure and it gets properly distributed in the mappings"() {
         given:
-        File file = new File("test-docs\\first.txt")
+        File file = new File(TEST_DOCS + "/first.txt")
         when:
         def structure = new InvertedIndexStructure(file)
         then:
@@ -34,7 +35,7 @@ class InvertedIndexStructureTest extends Specification {
     @Unroll
     def "Putting data from list of files works and gets properly distributed in the index structure"() {
         given:
-        final List<File> files = Files.walk(Paths.get("test-docs"))
+        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
                 .filter { it -> Files.isRegularFile(it) }
                 .map { it.toFile() }
                 .collect(Collectors.toList());
@@ -48,7 +49,7 @@ class InvertedIndexStructureTest extends Specification {
     @Unroll
     def "Searching for word 'brown' returns the first and second documents because theyre appeared there"() {
         given:
-        final List<File> files = Files.walk(Paths.get("test-docs"))
+        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
                 .filter { it -> Files.isRegularFile(it) }
                 .map { it.toFile() }
                 .collect(Collectors.toList());
@@ -63,7 +64,7 @@ class InvertedIndexStructureTest extends Specification {
     @Unroll
     def "Searching for word 'fox' returns the first and third documents because theyre appeared there"() {
         given:
-        final List<File> files = Files.walk(Paths.get("test-docs"))
+        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
                 .filter { it -> Files.isRegularFile(it) }
                 .map { it.toFile() }
                 .collect(Collectors.toList());
