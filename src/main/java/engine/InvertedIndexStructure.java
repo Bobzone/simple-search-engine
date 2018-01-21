@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 class InvertedIndexStructure {
 
-    private Multimap<String, File> mappings = ArrayListMultimap.create();
+    private Multimap<String, Term> mappings = ArrayListMultimap.create();
 
     public InvertedIndexStructure(List<File> files) {
         files.forEach(this::putIntoMappings);
@@ -26,7 +26,7 @@ class InvertedIndexStructure {
         try (Scanner scanner = new Scanner(file)) {
             scanner.useDelimiter(" +");
             while (scanner.hasNext()) {
-                mappings.put(scanner.next(), file);
+                mappings.put(scanner.next(), new Term(file));
             }
         } catch (FileNotFoundException e) {
             // TODO: logger.error() // warn() here
@@ -57,8 +57,8 @@ class InvertedIndexStructure {
 //            e.printStackTrace();
 //        }
 //    }
-    private List<File> findPaths(String query) {
-        return (List<File>) mappings.get(query);
+    private List<Term> findPaths(String query) {
+        return (List<Term>) mappings.get(query);
     }
 
     /**
@@ -68,14 +68,14 @@ class InvertedIndexStructure {
      * @return List of files where given query was found (just the filenames)
      */
     public List<String> find(String query) {
-        final List<File> paths = findPaths(query);
-
+        final List<Term> paths = findPaths(query);
         return getFilenames(paths);
     }
 
-    private List<String> getFilenames(final List<File> paths) {
+    private List<String> getFilenames(final List<Term> paths) {
         return paths
                 .stream()
+                .map(Term::getSource)
                 .map(File::getName)
                 .collect(Collectors.toList());
     }
