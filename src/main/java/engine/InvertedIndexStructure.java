@@ -20,6 +20,9 @@ class InvertedIndexStructure {
     private Multimap<String, Term> mappings = ArrayListMultimap.create();
 
     public InvertedIndexStructure(List<File> files) {
+        if (null == files) {
+            throw new IllegalArgumentException("Null passed as an argument for structure building. ");
+        }
         files.forEach(this::putIntoMappings);
     }
 
@@ -34,6 +37,9 @@ class InvertedIndexStructure {
      * @return List of files where given query was found (just the filenames)
      */
     public List<String> find(String query) {
+        if (null == query) {
+            throw new IllegalArgumentException("Not possible to execute query-based search with empty query. ");
+        }
         final long start = System.currentTimeMillis();
 
         final List<Term> terms = findPaths(query);

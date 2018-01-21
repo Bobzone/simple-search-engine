@@ -50,6 +50,26 @@ class InvertedIndexStructureTest extends Specification {
     }
 
     @Unroll
+    def "Throw exception when trying to build index structure from null list"() {
+        when:
+        def structure = new InvertedIndexStructure(null)
+        then:
+        IllegalArgumentException e = thrown()
+        e.getMessage().contains("Null")
+    }
+
+    @Unroll
+    def "Throw exception when null passed as query "() {
+        when:
+        def structure = new InvertedIndexStructure(files)
+        def searchResult = structure.find(null)
+        then:
+        IllegalArgumentException e = thrown()
+        e.getMessage().contains("empty")
+
+    }
+
+    @Unroll
     def "Searching for word 'brown' returns the first and second documents because they appeared there"() {
         when:
         def structure = new InvertedIndexStructure(files)
