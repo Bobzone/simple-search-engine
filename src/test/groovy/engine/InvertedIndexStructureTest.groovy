@@ -50,7 +50,7 @@ class InvertedIndexStructureTest extends Specification {
     }
 
     @Unroll
-    def "Searching for word 'brown' returns the first and second documents because theyre appeared there"() {
+    def "Searching for word 'brown' returns the first and second documents because they appeared there"() {
         when:
         def structure = new InvertedIndexStructure(files)
         def searchResult = structure.find("brown")
@@ -60,7 +60,7 @@ class InvertedIndexStructureTest extends Specification {
     }
 
     @Unroll
-    def "Searching for word 'fox' returns the first and third documents because theyre appeared there"() {
+    def "Searching for word 'fox' returns the first and third documents because they appeared there"() {
         when:
         def structure = new InvertedIndexStructure(files)
         def searchResult = structure.find("fox")
