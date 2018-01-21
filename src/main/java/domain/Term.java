@@ -1,8 +1,8 @@
-package engine;
+package domain;
 
 import java.io.File;
 
-class Term {
+public class Term {
 
     private File source;
     private int nrOfOccurences = 1;

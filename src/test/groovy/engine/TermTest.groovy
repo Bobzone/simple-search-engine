@@ -1,5 +1,6 @@
 package engine
 
+import domain.Term
 import spock.lang.Specification
 import spock.lang.Unroll
 

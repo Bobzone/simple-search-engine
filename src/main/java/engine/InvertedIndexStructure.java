@@ -3,6 +3,9 @@ package engine;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import domain.Term;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.Arrays;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 
 class InvertedIndexStructure {
 
+    private static Logger logger = LogManager.getLogger(InvertedIndexStructure.class);
     private Multimap<String, Term> mappings = ArrayListMultimap.create();
 
     public InvertedIndexStructure(List<File> files) {
@@ -30,8 +34,13 @@ class InvertedIndexStructure {
      * @return List of files where given query was found (just the filenames)
      */
     public List<String> find(String query) {
+        final long start = System.currentTimeMillis();
+
         final List<Term> terms = findPaths(query);
         applyTfidfSort(terms);
+        final long end = System.currentTimeMillis();
+
+        logger.debug("Find with query: [{}] finished in {} ms.", query, end - start);
         return getFilenames(terms);
     }
 
@@ -47,9 +56,7 @@ class InvertedIndexStructure {
                 }
             }
         } catch (FileNotFoundException e) {
-            // TODO: logger.error() // warn() here
-            System.out.println("Error during opening file. ");
-            e.printStackTrace();
+            logger.warn("Error during opening file: ", e);
         }
     }
 
@@ -77,9 +84,7 @@ class InvertedIndexStructure {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            // TODO: logger.error() // warn() here
-            System.out.println("IO Error: " + e.getLocalizedMessage());
-            e.printStackTrace();
+            logger.warn("IO Error: ", e);
         }
     }
 
