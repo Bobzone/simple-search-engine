@@ -10,6 +10,14 @@ import java.util.stream.Collectors
 class InvertedIndexStructureTest extends Specification {
 
     public static final String TEST_DOCS = "src/main/resources/test-docs"
+    private List<File> files
+
+    def setup() {
+        files = Files.walk(Paths.get(TEST_DOCS))
+                .filter { it -> Files.isRegularFile(it) }
+                .map { it.toFile() }
+                .collect(Collectors.toList())
+    }
 
     @Unroll
     def "Java8 method of reading files works ok"() {
@@ -19,7 +27,7 @@ class InvertedIndexStructureTest extends Specification {
                 .map { it.toFile() }
                 .collect(Collectors.toList())
         then:
-        files.size() == 3
+        this.files.size() == 3
     }
 
     @Unroll
@@ -34,11 +42,6 @@ class InvertedIndexStructureTest extends Specification {
 
     @Unroll
     def "Putting data from list of files works and gets properly distributed in the index structure"() {
-        given:
-        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
-                .filter { it -> Files.isRegularFile(it) }
-                .map { it.toFile() }
-                .collect(Collectors.toList());
         when:
         def structure = new InvertedIndexStructure(files)
         then:
@@ -48,11 +51,6 @@ class InvertedIndexStructureTest extends Specification {
 
     @Unroll
     def "Searching for word 'brown' returns the first and second documents because theyre appeared there"() {
-        given:
-        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
-                .filter { it -> Files.isRegularFile(it) }
-                .map { it.toFile() }
-                .collect(Collectors.toList());
         when:
         def structure = new InvertedIndexStructure(files)
         def searchResult = structure.find("brown")
@@ -63,11 +61,6 @@ class InvertedIndexStructureTest extends Specification {
 
     @Unroll
     def "Searching for word 'fox' returns the first and third documents because theyre appeared there"() {
-        given:
-        final List<File> files = Files.walk(Paths.get(TEST_DOCS))
-                .filter { it -> Files.isRegularFile(it) }
-                .map { it.toFile() }
-                .collect(Collectors.toList());
         when:
         def structure = new InvertedIndexStructure(files)
         def searchResult = structure.find("fox")
