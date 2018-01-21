@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 class InvertedIndexStructure {
 
@@ -56,7 +57,26 @@ class InvertedIndexStructure {
 //            e.printStackTrace();
 //        }
 //    }
-    public List<File> search(String query) {
-        return null;
+    private List<File> findPaths(String query) {
+        return (List<File>) mappings.get(query);
+    }
+
+    /**
+     * Return the list of documents (filenames) where given term occurs sorted by tf-idf
+     *
+     * @param query Word to look for in the index structure
+     * @return List of files where given query was found (just the filenames)
+     */
+    public List<String> find(String query) {
+        final List<File> paths = findPaths(query);
+
+        return getFilenames(paths);
+    }
+
+    private List<String> getFilenames(final List<File> paths) {
+        return paths
+                .stream()
+                .map(File::getName)
+                .collect(Collectors.toList());
     }
 }

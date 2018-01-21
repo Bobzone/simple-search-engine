@@ -2,7 +2,6 @@ package engine
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -47,7 +46,7 @@ class InvertedIndexStructureTest extends Specification {
     }
 
     @Unroll
-    def "Searching for given word returns the document where it appeared"() {
+    def "Searching for word 'brown' returns the first and second documents because theyre appeared there"() {
         given:
         final List<File> files = Files.walk(Paths.get("test-docs"))
                 .filter { it -> Files.isRegularFile(it) }
@@ -55,8 +54,24 @@ class InvertedIndexStructureTest extends Specification {
                 .collect(Collectors.toList());
         when:
         def structure = new InvertedIndexStructure(files)
-        def searchResult = structure.search("brown")
+        def searchResult = structure.find("brown")
         then:
-        throw new NotImplementedException()
+        searchResult.get(0).toString() == "first.txt"
+        searchResult.get(1).toString() == "second.txt"
+    }
+
+    @Unroll
+    def "Searching for word 'fox' returns the first and third documents because theyre appeared there"() {
+        given:
+        final List<File> files = Files.walk(Paths.get("test-docs"))
+                .filter { it -> Files.isRegularFile(it) }
+                .map { it.toFile() }
+                .collect(Collectors.toList());
+        when:
+        def structure = new InvertedIndexStructure(files)
+        def searchResult = structure.find("fox")
+        then:
+        searchResult.get(0).toString() == "first.txt"
+        searchResult.get(1).toString() == "third.txt"
     }
 }
