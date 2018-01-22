@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Bobzone/simple-search-engine.svg?branch=master)](https://travis-ci.org/Bobzone/simple-search-engine)
 # Java assignment - Simple search engine
 
 The goal of this assignment is to create a simple search engine in Java. The search engine should be
