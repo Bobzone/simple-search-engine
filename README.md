@@ -6,9 +6,9 @@ implemented as an inverted index that runs in memory and can
 return a list that is sorted by TF-IDF
 
 The search engine should:
-	- be able to take in a list of documents
-	- support searches for single terms in the document set
-	- return a list of matching documents sorted by TF-IDF
+* be able to take in a list of documents
+* support searches for single terms in the document set
+* return a list of matching documents sorted by TF-IDF
 	
 ## Example
 
